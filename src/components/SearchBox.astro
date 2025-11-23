@@ -1,0 +1,26 @@
+---
+const { placeholder = 'Search posts' } = Astro.props;
+---
+
+<div class="search-box">
+  <label class="search-box__label" for="search-input">Search</label>
+  <input id="search-input" name="search" type="search" placeholder={placeholder} autocomplete="off" />
+</div>
+
+<script>
+  const input = document.getElementById('search-input');
+  let timer;
+
+  const emit = (value) => {
+    window.dispatchEvent(new CustomEvent('dustchapel:search', { detail: value }));
+  };
+
+  const handler = (event) => {
+    const value = event.target.value;
+    clearTimeout(timer);
+    timer = setTimeout(() => emit(value.trim()), 180);
+  };
+
+  input?.addEventListener('input', handler);
+  input?.addEventListener('focus', handler);
+</script>

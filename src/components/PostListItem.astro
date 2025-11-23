@@ -1,0 +1,44 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+}
+
+const { post } = Astro.props as Props;
+const { data } = post;
+const formattedDate = data.date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric'
+});
+const heroIsImage = typeof data.heroImage === 'object' && data.heroImage !== null && 'src' in (data.heroImage as any);
+---
+
+<article class="post-list-item">
+  {data.heroImage && (
+    <div class="post-list-item__thumb">
+      {heroIsImage ? (
+        <Image src={data.heroImage as any} alt={data.heroImageAlt ?? data.title} widths={[320, 640]} sizes="(max-width: 600px) 100vw, 240px" />
+      ) : (
+        <img src={data.heroImage as string} alt={data.heroImageAlt ?? data.title} loading="lazy" decoding="async" />
+      )}
+    </div>
+  )}
+  <div class="post-list-item__body">
+    <div class="post-list-item__meta">
+      <time datetime={data.date.toISOString()}>{formattedDate}</time>
+      {data.draft && <span class="post-list-item__badge">Draft</span>}
+    </div>
+    <h2 class="post-list-item__title">
+      <a href={`/blog/${post.slug}`}>{data.title}</a>
+    </h2>
+    <p class="post-list-item__description">{data.description}</p>
+    {data.tags && (
+      <ul class="post-list-item__tags">
+        {data.tags.map((tag) => <li>{tag}</li>)}
+      </ul>
+    )}
+  </div>
+</article>

@@ -1,0 +1,30 @@
+---
+import { site } from '../config/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string | import('astro').ImageMetadata;
+  canonicalUrl?: string;
+  pageType?: 'website' | 'article';
+}
+
+const { title = site.title, description = site.description, ogImage = site.defaultOgImage, canonicalUrl, pageType = 'website' } =
+  Astro.props as Props;
+
+const resolvedCanonical = canonicalUrl || `${site.siteUrl}${Astro.url.pathname}`;
+const ogImageSrc = typeof ogImage === 'string' ? ogImage : (ogImage as any)?.src || site.defaultOgImage;
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:type" content={pageType} />
+<meta property="og:url" content={resolvedCanonical} />
+<meta property="og:image" content={ogImageSrc} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageSrc} />
+<link rel="canonical" href={resolvedCanonical} />

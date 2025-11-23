@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostListItem from '../components/PostListItem.astro';
+import Pagination from '../components/Pagination.astro';
+import SearchBox from '../components/SearchBox.astro';
+import SearchResults from '../components/SearchResults.astro';
+import { getPaginatedPosts } from '../utils/posts';
+import { site } from '../config/site';
+
+const { posts, totalPages } = await getPaginatedPosts(1, import.meta.env.DEV);
+---
+
+<BaseLayout>
+  <section class="container hero">
+    <h1>{site.title}</h1>
+    <p>A minimal Astro-powered blog made for images and notes from quiet rooms.</p>
+  </section>
+
+  <section class="container search-area">
+    <SearchBox />
+    <SearchResults />
+  </section>
+
+  <section class="container post-list">
+    {posts.map((post) => <PostListItem post={post} />)}
+  </section>
+
+  <section class="container">
+    <Pagination currentPage={1} totalPages={totalPages} basePath="/" />
+  </section>
+</BaseLayout>

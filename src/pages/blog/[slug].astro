@@ -1,0 +1,26 @@
+---
+import { getCollection, getEntryBySlug } from 'astro:content';
+import PostLayout from '../../layouts/PostLayout.astro';
+import { site } from '../../config/site';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', (entry) => {
+    return import.meta.env.DEV || !entry.data.draft;
+  });
+
+  return posts.map((post) => ({
+    params: { slug: post.slug }
+  }));
+}
+
+const { slug } = Astro.params;
+const post = slug ? await getEntryBySlug('posts', slug) : null;
+
+if (!post || (!import.meta.env.DEV && post.data.draft)) {
+  return new Response(null, { status: 404 });
+}
+
+const { Content } = await post.render();
+---
+
+<PostLayout post={post} Content={Content} />

@@ -1,0 +1,24 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: string | ImageMetadata;
+  alt?: string;
+  caption?: string;
+  gallery?: string;
+}
+
+const { src, alt, caption, gallery } = Astro.props as Props;
+const isMetadata = typeof src === 'object' && src !== null && 'src' in (src as any);
+const galleryAttr = gallery ? { 'data-gallery': gallery } : {};
+---
+
+<figure class="lightbox-figure" {...galleryAttr}>
+  {isMetadata ? (
+    <Image src={src as ImageMetadata} alt={alt ?? ''} data-lightbox="image" {...galleryAttr} />
+  ) : (
+    <img src={src as string} alt={alt ?? ''} loading="lazy" decoding="async" data-lightbox="image" {...galleryAttr} />
+  )}
+  {(caption || alt) && <figcaption>{caption || alt}</figcaption>}
+</figure>

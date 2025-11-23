@@ -1,0 +1,36 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { AstroComponentFactory } from 'astro/runtime/server';
+import BaseLayout from './BaseLayout.astro';
+import PostHero from '../components/PostHero.astro';
+import { site } from '../config/site';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+  Content: AstroComponentFactory;
+}
+
+const { post, Content } = Astro.props as Props;
+const { data } = post;
+const formattedDate = data.date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric'
+});
+const ogImage = data.ogImage ?? data.heroImage ?? site.defaultOgImage;
+const canonicalUrl = data.canonicalUrl ?? `${site.siteUrl}/blog/${post.slug}`;
+---
+
+<BaseLayout title={`${data.title} | ${site.title}`} description={data.description} ogImage={ogImage} {canonicalUrl} pageType="article">
+  <article class="post">
+    <header class="post__header">
+      {data.draft && <span class="post__badge">Draft</span>}
+      <p class="post__meta">{formattedDate}</p>
+      <h1 class="post__title">{data.title}</h1>
+    </header>
+    <PostHero src={data.heroImage} alt={data.heroImageAlt ?? data.title} />
+    <div class="post__content">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

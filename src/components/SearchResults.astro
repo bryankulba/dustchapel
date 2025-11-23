@@ -1,0 +1,63 @@
+<div class="search-results" data-hydrated="false">
+  <div class="search-results__empty">Start typing to search the archive.</div>
+  <ul class="search-results__list"></ul>
+</div>
+
+<script>
+  const container = document.currentScript?.previousElementSibling as HTMLElement;
+  const list = container?.querySelector('.search-results__list');
+  const empty = container?.querySelector('.search-results__empty');
+  let index = [];
+  let loaded = false;
+
+  const render = (results) => {
+    if (!list || !empty) return;
+    list.innerHTML = '';
+    if (!results.length) {
+      empty.textContent = 'No matches yet. Try another phrase.';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+    results.slice(0, 8).forEach((item) => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <a href="${item.url}">
+          <span class="search-results__title">${item.title}</span>
+          <span class="search-results__desc">${item.description}</span>
+        </a>
+      `;
+      list.appendChild(li);
+    });
+  };
+
+  const loadIndex = async () => {
+    if (loaded) return;
+    const res = await fetch('/search-index.json');
+    if (!res.ok) return;
+    index = await res.json();
+    loaded = true;
+    container?.setAttribute('data-hydrated', 'true');
+  };
+
+  const score = (item, terms) => {
+    const haystack = `${item.title} ${item.description} ${(item.tags || []).join(' ')}`.toLowerCase();
+    return terms.every((term) => haystack.includes(term));
+  };
+
+  window.addEventListener('dustchapel:search', async (event) => {
+    const query = (event as CustomEvent).detail || '';
+    if (!query) {
+      if (list) list.innerHTML = '';
+      if (empty) {
+        empty.textContent = 'Start typing to search the archive.';
+        empty.style.display = 'block';
+      }
+      return;
+    }
+    await loadIndex();
+    const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+    const results = index.filter((item) => score(item, terms));
+    render(results);
+  });
+</script>

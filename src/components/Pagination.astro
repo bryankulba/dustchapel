@@ -1,0 +1,29 @@
+---
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  basePath?: string;
+}
+
+const { currentPage, totalPages, basePath = '/' } = Astro.props as Props;
+
+const pageHref = (page: number) => (page === 1 ? basePath : `${basePath}page/${page}`);
+---
+
+{totalPages > 1 && (
+  <nav class="pagination" aria-label="Pagination">
+    <a class="pagination__link" href={pageHref(Math.max(1, currentPage - 1))} aria-disabled={currentPage === 1}>Prev</a>
+    <div class="pagination__pages">
+      {Array.from({ length: totalPages }).map((_, index) => {
+        const page = index + 1;
+        const isActive = page === currentPage;
+        return (
+          <a class={`pagination__link ${isActive ? 'is-active' : ''}`} href={pageHref(page)} aria-current={isActive ? 'page' : undefined}>
+            {page}
+          </a>
+        );
+      })}
+    </div>
+    <a class="pagination__link" href={pageHref(Math.min(totalPages, currentPage + 1))} aria-disabled={currentPage === totalPages}>Next</a>
+  </nav>
+)}

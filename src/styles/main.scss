@@ -1,0 +1,13 @@
+@use 'variables';
+@use 'mixins';
+@use 'reset';
+@use 'typography';
+@use 'layout';
+@use 'header';
+@use 'footer';
+@use 'post';
+
+body {
+  background: radial-gradient(ellipse at 30% 20%, #f1e6d8 0, transparent 40%), radial-gradient(ellipse at 80% 0%, #f3eadf 0, transparent 55%),
+    var(--color-bg);
+}

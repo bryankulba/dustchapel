@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostListItem from '../../components/PostListItem.astro';
+import Pagination from '../../components/Pagination.astro';
+import { getPaginatedPosts, getSortedPosts } from '../../utils/posts';
+import { site } from '../../config/site';
+
+export async function getStaticPaths() {
+  const posts = await getSortedPosts(import.meta.env.DEV);
+  const totalPages = Math.max(1, Math.ceil(posts.length / site.itemsPerPage));
+  return Array.from({ length: Math.max(0, totalPages - 1) }).map((_, index) => ({
+    params: { page: String(index + 2) }
+  }));
+}
+
+const pageNumber = Number(Astro.params.page || '1');
+const { posts, totalPages } = await getPaginatedPosts(pageNumber, import.meta.env.DEV);
+---
+
+<BaseLayout title={`Page ${pageNumber} | ${site.title}`}>
+  <section class="container hero">
+    <h1>{site.title}</h1>
+    <p>Page {pageNumber} of {totalPages}</p>
+  </section>
+
+  <section class="container post-list">
+    {posts.map((post) => <PostListItem post={post} />)}
+  </section>
+
+  <section class="container">
+    <Pagination currentPage={pageNumber} totalPages={totalPages} basePath="/" />
+  </section>
+</BaseLayout>

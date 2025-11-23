@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../config/site';
+---
+
+<BaseLayout title={`Contact | ${site.title}`} description="Contact Dust Chapel">
+  <section class="container section card">
+    <h1>Contact</h1>
+    <p>If you have notes, corrections, or want to collaborate, send a message.</p>
+    <p>Email: <a href="mailto:hello@dustchapel.test">hello@dustchapel.test</a></p>
+    <p>RSS: <a href="/rss.xml">/rss.xml</a></p>
+  </section>
+</BaseLayout>
