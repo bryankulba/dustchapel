@@ -3,11 +3,11 @@
 .post {
   @include container;
   margin-top: var(--space-xl);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-xl);
-  box-shadow: var(--shadow-soft);
+  // background: var(--color-surface);
+  // border: 1px solid var(--color-border);
+  // border-radius: var(--radius-lg);
+  // padding: var(--space-xl);
+  // box-shadow: var(--shadow-soft);
 }
 
 .post__header {
@@ -74,10 +74,10 @@
 .post-list-item {
   display: flex;
   gap: var(--space-md);
-  padding: var(--space-md);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface);
+  // padding: var(--space-md);
+  // border: 1px solid var(--color-border);
+  // border-radius: var(--radius-lg);
+  // background: var(--color-surface);
 }
 
 .post-list-item__thumb {
